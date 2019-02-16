@@ -7,7 +7,7 @@ export default function App() {
 
   useEffect(() => {
     getResults()
-  }, [query])
+  }, [])
 
   // We can't use async await in useEffect.
   // Error is thrown as useEffect needs to return function and not promise
@@ -19,9 +19,21 @@ export default function App() {
     setResults(response.data.hits)
   }
 
+  const handleSearch = event => {
+    event.preventDefault()
+    getResults()
+  }
+
   return (
     <>
-      <input type="text" onChange={event => setQuery(event.target.value)} />
+      <form onSubmit={handleSearch}>
+        <input
+          type="text"
+          onChange={event => setQuery(event.target.value)}
+          value={query}
+        />
+        <button type="submit">Search</button>
+      </form>
       <ul>
         {results.map(result => (
           <li key={result.objectID}>
