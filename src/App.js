@@ -4,6 +4,7 @@ import axios from 'axios'
 export default function App() {
   const [results, setResults] = useState([])
   const [query, setQuery] = useState('reacthooks')
+  const [loading, setLoading] = useState(false)
   const searchInputRef = useRef()
 
   useEffect(() => {
@@ -13,11 +14,15 @@ export default function App() {
   // We can't use async await in useEffect.
   // Error is thrown as useEffect needs to return function and not promise
   const getResults = async () => {
+    setLoading(true)
+
     const response = await axios.get(
       `https://hn.algolia.com/api/v1/search?query=${query}`
     )
 
     setResults(response.data.hits)
+
+    setLoading(false)
   }
 
   const handleSearch = event => {
@@ -44,13 +49,17 @@ export default function App() {
           Clear
         </button>
       </form>
-      <ul>
-        {results.map(result => (
-          <li key={result.objectID}>
-            <a href={result.url}>{result.title}</a>
-          </li>
-        ))}
-      </ul>
+      {loading ? (
+        <div>Loading results..</div>
+      ) : (
+        <ul>
+          {results.map(result => (
+            <li key={result.objectID}>
+              <a href={result.url}>{result.title}</a>
+            </li>
+          ))}
+        </ul>
+      )}
     </>
   )
 }
