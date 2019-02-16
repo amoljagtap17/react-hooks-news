@@ -1,5 +1,27 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 
 export default function App() {
-  return <div>App</div>
+  const [results, setResults] = useState([])
+
+  useEffect(() => {
+    axios
+      .get('https://hn.algolia.com/api/v1/search?query=reacthooks')
+      .then(response => {
+        console.log(response.data)
+        setResults(response.data.hits)
+      })
+  }, [])
+
+  return (
+    <>
+      <ul>
+        {results.map(result => (
+          <li key={result.objectID}>
+            <a href={result.url}>{result.title}</a>
+          </li>
+        ))}
+      </ul>
+    </>
+  )
 }
