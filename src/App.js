@@ -5,13 +5,18 @@ export default function App() {
   const [results, setResults] = useState([])
 
   useEffect(() => {
-    axios
-      .get('https://hn.algolia.com/api/v1/search?query=reacthooks')
-      .then(response => {
-        console.log(response.data)
-        setResults(response.data.hits)
-      })
+    getResults()
   }, [])
+
+  // We can't use async await in useEffect.
+  // Error is thrown as useEffect needs to return function and not promise
+  const getResults = async () => {
+    const response = await axios.get(
+      'https://hn.algolia.com/api/v1/search?query=reacthooks'
+    )
+
+    setResults(response.data.hits)
+  }
 
   return (
     <>
